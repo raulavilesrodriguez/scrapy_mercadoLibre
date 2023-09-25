@@ -29,6 +29,54 @@ while (TRUE) {
   } else message(sprintf('The page is %s', result))
 }
 
+# list of files in a Directory
+pages <- (list.files(path = 'data24sep23/', pattern = '.html', all.files = TRUE, full.names = TRUE, recursive=FALSE))
+# order for Date of creation
+file_info <- file.info(pages)
+file_info <- file_info[with(file_info, order(as.POSIXct(mtime))), ]
+pages_ordered <- rownames(file_info)
+
+pages_ordered <- list(pages_ordered)
+
+# ....SCRAPY OF EACH PAGE....
+# Name of smartphone and characteristics
+carac_celulares <- list()
+total_precios <- list()
+
+list_caract <- sapply(pages_ordered[[1]], function(page){
+  print(page)
+  data <-read_html(page, encoding="UTF-8")
+  caracteristicas <- data |> html_elements(xpath = '//h2[@class="ui-search-item__title shops__item-title"]') |> html_text2()
+  print(caracteristicas)
+  carac_celulares <- c(
+    carac_celulares,
+    caracteristicas
+  )
+})
+
+list_precios <- sapply(pages_ordered[[1]], function(page){
+  print(page)
+  data <-read_html(page, encoding="UTF-8")
+  precios <- data |> html_elements(xpath = '//span[@class="andes-money-amount__fraction"]') |> html_text2()
+  print(precios)
+  total_precios <- c(
+    total_precios,
+    precios
+  )
+})
+
+# converting the list containg the scraped data into tibble
+df_celulares <- tibble(
+  unlist(list_caract),
+  unlist(list_precios)
+)
+names(df_celulares) <- c('caracteristicas', 'precio')
+
+
+#____________Wrangling____________
+#Export tibble
+writexl::write_xlsx(df_celulares, 'celulares.xlsx')
+
 
 
 
