@@ -15,5 +15,8 @@ To avoid the errors when we liket to upload the app is necessary the next steps:
 Sys.setlocale(category = "LC_ALL", locale = "en_US.UTF-8")
 ```
 
+## Result
+[PRice of mobile terminals in Ecuador](https://rpubs.com/ideaviles/priceMobileSep2023)
+
 # My CV here:
  [Raúl Avilés Web Page](https://raulaviles.netlify.app/)
